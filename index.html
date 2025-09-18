@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gündelik Kaos Testi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .question {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: white;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            filter: brightness(110%);
+        }
+
+        .option-1 { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); }
+        .option-2 { background: linear-gradient(135deg, #4ecdc4 0%, #44bd32 100%); }
+        .option-3 { background: linear-gradient(135deg, #45b7d1 0%, #3742fa 100%); }
+
+        .welcome-screen {
+            text-align: center;
+        }
+
+        .welcome-screen h1 {
+            margin-bottom: 20px;
+        }
+
+        .welcome-description {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .nickname-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin: 20px auto;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .result-message {
+            font-size: 1.3em;
+            color: #555;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .option {
+                padding: 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="welcome" class="welcome-screen">
+            <h1>🌪️ Gündelik Kaos Testi</h1>
+            <div class="welcome-description">
+                <p><strong>Gündelik Kaos Testi</strong></p>
+                <p><strong>Dünyaca ünlü profesörler (yok aslında) tarafından hazırlandı.</strong></p>
+                <p>5 soruya cevap ver, sana özel sonucu öğren!</p>
+            </div>
+            <input type="text" id="nicknameInput" class="nickname-input" placeholder="Nickname girin..." maxlength="20">
+            <br>
+            <button id="startBtn" class="start-btn">🚀 Teste Başla</button>
+        </div>
+
+        <div id="quiz" class="quiz-content">
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number" id="questionNumber">Soru 1/5</div>
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+            </div>
+        </div>
+
+        <div id="result" class="result">
+            <h2>🎉 Test Sonucu</h2>
+            <div class="result-message" id="resultMessage"></div>
+            <button class="restart-btn">🔄 Tekrar Başla</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase modüllerini içe aktarın
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBL4c-wTf27smHSxmQGox53tsAL7PcQAuA",
+            authDomain: "nass-e68cf.firebaseapp.com",
+            projectId: "nass-e68cf",
+            storageBucket: "nass-e68cf.firebasestorage.app",
+            messagingSenderId: "104556294568",
+            appId: "1:104556294568:web:8de3a827482ec81a41ed9d",
+            measurementId: "G-QMHMW4BYP5"
+        };
+        
+        // Uygulamayı başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        // Firestore'a kaydetme fonksiyonu
+        async function saveResultToFirebase(nickname, answers, resultMessage) {
+            try {
+                // Firebase'e anonim olarak giriş yap
+                const userCredential = await signInAnonymously(auth);
+                const userId = userCredential.user.uid;
+                
+                // Firestore yolunu oluştur
+                const appId = 'nass-e68cf'; // Projenizin ID'sini buraya ekledik
+                const collectionPath = `/artifacts/${appId}/users/${userId}/quizResults`;
+
+                const docRef = await addDoc(collection(db, collectionPath), {
+                    nickname: nickname,
+                    answers: answers,
+                    result: resultMessage,
+                    timestamp: new Date()
+                });
+                console.log("Sonuç Firebase'e kaydedildi, ID: ", docRef.id);
+            } catch (e) {
+                console.error("Firebase'e sonuç kaydedilirken bir hata oluştu: ", e);
+            }
+        }
+        
+        const questions = [
+            {
+                question: "Sabah uyanır uyanmaz ilk işin ne olur?",
+                options: [
+                    "A) Kahveye saldırırım ☕",
+                    "B) Telefona bakarım 📱",
+                    "C) Battaniyeye sarılıp \"5 dakika daha\" derim 😴"
+                ]
+            },
+            {
+                question: "Toplu taşıma aracı aniden sert fren yaptı ve yanındaki yabancının üstüne düştün…",
+                options: [
+                    "A) \"Biz evlendik mi şimdi?\" diye sorarım 💍",
+                    "B) Ayağa kalkıp ciddi ciddi \"özür dilerim\" derim 🤓",
+                    "C) Utanıp sanki ben değil o düşmüş gibi davranırım 😅"
+                ]
+            },
+            {
+                question: "Telefonun şarjı %1 ve priz yok… Ne yaparsın?",
+                options: [
+                    "A) Paniklerim, dünyam kararır 😱",
+                    "B) \"Oh be, biraz kafam dinlenecek\" derim 😌",
+                    "C) Başkasının şarj aletine gizlice dadanırım 🔌"
+                ]
+            },
+            {
+                question: "Yolda yürürken ayağın taşa takıldı, ne yaparsın?",
+                options: [
+                    "A) \"Benim suçum değil taş suçlu!\" derim 🪨",
+                    "B) Sanki dans figürüymüş gibi devam ederim 💃",
+                    "C) Utanıp telefonla oynuyormuş gibi yaparım 📱"
+                ]
+            },
+            {
+                question: "Bir pizzayı nasıl yersin?",
+                options: [
+                    "A) Dilim dilim, efendi efendi 🍕",
+                    "B) Katlayıp dürüm gibi yerim 🌯",
+                    "C) Peyniri sıyırıp ayrı, hamuru ayrı yerim 😋"
+                ]
+            }
+        ];
+
+        const results = [
+            "Hayatın her anına bahane bulup eğlence çıkaran bir ruh var sende.",
+            "İnsanlar seni ciddiye almaya çalışsa da içindeki mizah hep kazanıyor.",
+            "Basit şeyleri bile şova çevirmekte ustasın.",
+            "Kaos çıktığında bile soğukkanlılığını kaybetmeyen nadir tiplerdensin.",
+            "Tuhaf ama sevimli bir enerji yayıyorsun.",
+            "Çoğu kişi seni tahmin edemez; sürprizlerle dolusun.",
+            "Biraz garip ama kesinlikle unutulmaz bir karaktere sahipsin.",
+            "Hayatındaki aksilikleri bile eğlenceli hale getirebiliyorsun.",
+            "Her ortamda dikkat çekmeyi başarıyorsun, farkında olmasan bile.",
+            "İnsanların yüzünü güldürmek senin gizli süper gücün.",
+            "Başına gelen gariplikler seni pes ettirmek yerine komikleştiriyor.",
+            "Enerjin bazen fazla ama her zaman bulaşıcı.",
+            "\"Ne olursa olsun bir yolunu bulurum\" kafasındasın.",
+            "Her düşüşü dansa çevirecek kadar yaratıcı bir ruhun var.",
+            "Gündelik hayatı bile sit-com gibi yaşamayı başarıyorsun.",
+            "Normal olmak sana sıkıcı geliyor, farklı olmak ise eğlenceli.",
+            "Hem sakar hem de sempatik bir yanın var, ikisi de sende çok iyi duruyor.",
+            "İnsanların yanında asla sıkıcı bir an yaşanmıyor.",
+            "Hayat sana limon verse sen ondan stand-up show çıkarırsın.",
+            "Kaotik enerjinle her ortamda unutulmaz izler bırakıyorsun."
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let userNickname = '';
+
+        // Nickname input kontrolü
+        document.getElementById('nicknameInput').addEventListener('input', function() {
+            const startBtn = document.getElementById('startBtn');
+            if (this.value.trim().length >= 2) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        });
+
+        // Enter tuşu ile teste başlama
+        document.getElementById('nicknameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim().length >= 2) {
+                startQuiz();
+            }
+        });
+
+        function startQuiz() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            if (nickname.length < 2) {
+                // Kullanıcıya uyarı vermek için özel bir modal/mesaj kutusu kullanın
+                // alert() kullanmayın, çünkü tarayıcı kısıtlamaları nedeniyle çalışmaz
+                const messageBox = document.createElement('div');
+                messageBox.textContent = 'Lütfen en az 2 karakterli bir takma ad girin!';
+                messageBox.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: #ffcccc;
+                    padding: 20px;
+                    border: 1px solid #ff0000;
+                    border-radius: 10px;
+                    z-index: 1000;
+                `;
+                document.body.appendChild(messageBox);
+                setTimeout(() => messageBox.remove(), 3000);
+                return;
+            }
+
+            userNickname = nickname;
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestion < questions.length) {
+                const q = questions[currentQuestion];
+                document.getElementById('questionNumber').textContent = `Soru ${currentQuestion + 1}/5`;
+                document.getElementById('question').textContent = q.question;
+
+                const optionsContainer = document.getElementById('options');
+                optionsContainer.innerHTML = '';
+
+                q.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = `option option-${index + 1}`;
+                    optionDiv.textContent = option;
+                    optionDiv.onclick = () => selectAnswer(index);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                // Progress bar'ı güncelle
+                const progress = ((currentQuestion) / questions.length) * 100;
+                document.getElementById('progress').style.width = progress + '%';
+            }
+        }
+
+        function selectAnswer(answerIndex) {
+            answers.push({ question: questions[currentQuestion].question, answer: questions[currentQuestion].options[answerIndex] });
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                setTimeout(() => {
+                    displayQuestion();
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    showResult();
+                }, 300);
+            }
+        }
+
+        function showResult() {
+            // Progress bar'ı tamamla
+            document.getElementById('progress').style.width = '100%';
+
+            // Rastgele bir sonuç seç
+            const randomResult = results[Math.floor(Math.random() * results.length)];
+
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('resultMessage').innerHTML = `<strong>${userNickname}</strong>, işte senin sonucun:<br><br>${randomResult}`;
+            
+            // Firebase'e sonuçları kaydet
+            saveResultToFirebase(userNickname, answers, randomResult);
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = [];
+            userNickname = '';
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('welcome').style.display = 'block';
+            document.getElementById('nicknameInput').value = '';
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('progress').style.width = '0%';
+        }
+
+        // Sayfa yüklendiğinde başlangıç durumu ve olay dinleyicileri
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+
+            // Butonlara olay dinleyicileri ekle
+            document.getElementById('startBtn').addEventListener('click', startQuiz);
+            document.querySelector('.restart-btn').addEventListener('click', restartQuiz);
+        });
+    </script>
+</body>
+</html>
